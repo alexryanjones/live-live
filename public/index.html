@@ -4,12 +4,10 @@
     <title>WebSocket Demo</title>
   </head>
   <body>
-    <h1 id="counter">0</h1>
+    <h1 id="midi">Off</h1>
     <script>
       const ws = new WebSocket('ws://localhost:8001');
-      let count = 0;
-      let messageCount = 0;
-      let action = []
+      let midi = '';
 
       ws.onopen = function(event) {
         console.log('Connection is open fuck you!');
@@ -20,26 +18,16 @@
       };
 
       ws.onmessage = function(event) {
-        const array = JSON.parse(event.data)
-        console.log(array);
-        if (messageCount < 2) { 
-          action.push(array)
-          messageCount++;
+        const data = JSON.parse(event.data)
+        const { pitch, velocity, track } = data;
+
+        if (velocity === 0) {
+          midi = 'Off';
         } else {
-          switch (action[0][11]) {
-            case 144:
-              count = 1;
-              break;
-            case 128:
-              count = 0;
-              break;
-              default:
-                break;
-              }
-          document.getElementById('counter').textContent = count;
-          action = [];
-          messageCount = 0;
+          midi = 'On';
         }
+
+        document.getElementById('midi').textContent = midi;
       };
     </script>
   </body>

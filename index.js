@@ -23,15 +23,6 @@ const wss = new WebSocketServer({ server });
 
 wss.on('connection', function connection(ws) {
   ws.on('error', console.error);
-
-  ws.on('message', function message(data, isBinary) {
-    console.log('received: %s', data);
-    wss.clients.forEach(function each(client) {
-      if (client.readyState === WebSocket.OPEN) {
-        client.send({data: 'fuck'});
-      }
-    });
-  });
 });
 
 const udpServer = dgram.createSocket('udp4');
@@ -42,12 +33,14 @@ udpServer.on('listening', () => {
 });
 
 udpServer.on('message', (msg, rinfo) => {
-  console.log(msg);
-  const buffer = JSON.stringify([...msg]);
-  console.log(buffer);
+  const pitch = msg.readUInt32BE(16);
+  const velocity = msg.readUInt32BE(20);
+  const track = msg.readUInt32BE(24);
+  console.log(`Received ${pitch} ${velocity} ${track} from ${rinfo.address}:${rinfo.port}`);
+  const message = JSON.stringify({ pitch, velocity, track });
   wss.clients.forEach(function each(client) {
     if (client.readyState === WebSocket.OPEN) {
-      client.send(buffer);
+      client.send(message);
     }
   });
 });
