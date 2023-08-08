@@ -4,16 +4,12 @@ import WebSocket, { WebSocketServer } from 'ws';
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
-import { fileURLToPath } from 'url';
 
 const app = express();
 const port = 8001;
 
-const __filename = fileURLToPath(import.meta.url);
-const __dirname = path.dirname(__filename);
-
 app.use(cors());
-app.use(express.json({ extended: true }));
+app.use(express.json());
 
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -36,7 +32,9 @@ udpServer.on('message', (msg, rinfo) => {
   const pitch = msg.readUInt32BE(16);
   const velocity = msg.readUInt32BE(20);
   const track = msg.readUInt32BE(24);
-  console.log(`Received ${pitch} ${velocity} ${track} from ${rinfo.address}:${rinfo.port}`);
+  console.log(
+    `Received ${pitch} ${velocity} ${track} from ${rinfo.address}:${rinfo.port}`
+  );
   const message = JSON.stringify({ pitch, velocity, track });
   wss.clients.forEach(function each(client) {
     if (client.readyState === WebSocket.OPEN) {
