@@ -40,7 +40,7 @@ To run the ESLint linter:
 
 1. Fork the repository.
 2. Create a new branch for your feature: `git checkout -b feature/my-feature`.
-3. Make your changes and commit them: `git commit -am "Add my feature"`.
+3. Make your changes and commit them: `git commit -m "Add my feature"`.
 4. Push your changes to your fork: `git push origin feature/my-feature`.
 5. Create a pull request on the original repository.
 
