@@ -1,0 +1,26 @@
+.App {
+  text-align: center;
+}
+
+.track-info {
+  position: absolute;
+  text-align: center;
+  width: 100%;
+  height: 10%;
+  opacity: 0;
+}
+.bar {
+  height: 100%;
+  width: 0%;
+  transition: width 0.5s ease;
+}
+
+#track-0 .bar {
+  background-color: #9e9e9e;
+}
+#track-2 .bar {
+  background-color: #4caf50;
+}
+#track-3 .bar {
+  background-color: #03a9f4;
+}
