@@ -1,35 +1,24 @@
 import React, { useEffect } from 'react';
-import './App.css';
+
+import { Box } from '@chakra-ui/react';
+import { Bars } from './visuals/Bars';
+import { useTracksStore } from './store/tracks';
 
 function App() {
-  useEffect(() => {
-    const socket = new WebSocket(`${process.env.REACT_APP_WS_SERVER_ADDRESS}`);
+  const socket = new WebSocket(`${process.env.REACT_APP_WS_URL}`);
+  const tracks = useTracksStore((state) => state.tracks);
+  const setTrack = useTracksStore((state) => state.setTrack);
 
+  useEffect(() => {
     socket.onopen = () => {
       console.log('WebSocket connection established.');
     };
 
     socket.onmessage = (event) => {
       const data = JSON.parse(event.data);
-      const { velocity, track } = data;
-
-      if (track === 1) {
-        document.body.style.backgroundColor = velocity === 0 ? '#000' : '#FFF';
-      } else {
-        const div = document.getElementById(`track-${track}`);
-        const bar = div?.querySelector('.bar') as HTMLElement;
-
-        if (!div || !bar) {
-          return;
-        }
-
-        if (velocity === 0) {
-          div.style.opacity = '0';
-        } else {
-          div.style.opacity = '1';
-          bar.style.width = `${velocity}%`;
-        }
-      }
+      const { velocity, track, pitch } = data;
+      const trackId = track + 1;
+      setTrack(`${trackId}`, { id: trackId, velocity, pitch });
     };
 
     socket.onclose = () => {
@@ -42,18 +31,21 @@ function App() {
   }, []);
 
   return (
-    <div className="App">
-      <div id="track-0" className="track-info" style={{ top: '10%' }}>
-        <div className="bar"></div>
-      </div>
-
-      <div id="track-2" className="track-info" style={{ top: '50%' }}>
-        <div className="bar"></div>
-      </div>
-      <div id="track-3" className="track-info" style={{ top: '70%' }}>
-        <div className="bar"></div>
-      </div>
-    </div>
+    <Box bg="black" h="100vh">
+      <Box h="50%" display="flex">
+        <Box w="50%" bg="white">
+          {/*  Top left view */}
+        </Box>
+        <Box w="50%" bg="black">
+          {/*  Top right view */}
+          <Bars />
+        </Box>
+      </Box>
+      <Box h="50%" bg="gray.100">
+        {/*  Bottom view */}
+        <p>{JSON.stringify(tracks)}</p>
+      </Box>
+    </Box>
   );
 }
 
