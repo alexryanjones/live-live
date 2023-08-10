@@ -4,6 +4,11 @@ import WebSocket, { WebSocketServer } from 'ws';
 import express from 'express';
 import cors from 'cors';
 import path from 'path';
+/* import {
+  getBufferType,
+  getNoteData,
+  getParameterData,
+} from './utils/buffer-handler'; */
 
 const app = express();
 const port = 8001;
@@ -29,6 +34,18 @@ udpServer.on('listening', () => {
 });
 
 udpServer.on('message', (msg, rinfo) => {
+  /* const bufferType = getBufferType(msg);
+  let message;
+  if (bufferType === 'note') {
+    const noteData = getNoteData(msg);
+    message = JSON.stringify(noteData);
+  } else if (bufferType === 'parameter') {
+    const parameterData = getParameterData(msg);
+    message = JSON.stringify(parameterData);
+  }
+
+  console.log(message); */
+
   const pitch = msg.readUInt32BE(16);
   const velocity = msg.readUInt32BE(20);
   const track = msg.readUInt32BE(24);
