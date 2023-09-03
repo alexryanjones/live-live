@@ -1,12 +1,13 @@
 import React, { useEffect } from 'react';
 
 import { Box } from '@chakra-ui/react';
-import { Bars } from './visuals/Bars';
+import { Controller } from './visuals/Bars';
 import { useTracksStore } from './store/tracks';
+import { Sidebar } from './components/Sidebar';
+import { VRender } from './components/VRender';
 
 function App() {
   const socket = new WebSocket(`${process.env.REACT_APP_WS_URL}`);
-  const tracks = useTracksStore((state) => state.tracks);
   const setTrack = useTracksStore((state) => state.setTrack);
 
   useEffect(() => {
@@ -31,19 +32,14 @@ function App() {
   }, []);
 
   return (
-    <Box bg="black" h="100vh">
-      <Box h="50%" display="flex">
-        <Box w="50%" bg="white">
-          {/*  Top left view */}
-        </Box>
-        <Box w="50%" bg="black">
-          {/*  Top right view */}
-          <Bars />
-        </Box>
+    <Box display="flex" h="100vh">
+      <Box w="30%">
+        <Sidebar>
+          <Controller />
+        </Sidebar>
       </Box>
-      <Box h="50%" bg="gray.100">
-        {/*  Bottom view */}
-        <p>{JSON.stringify(tracks)}</p>
+      <Box w="70%" bg="black">
+        <VRender />
       </Box>
     </Box>
   );
